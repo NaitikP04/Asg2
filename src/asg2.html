@@ -87,64 +87,42 @@
   <p id="numdot">numdot:  ms:  fps:  </p>
 
   <div class="controls">
-    <button type="button" id="green">Green</button>
-    <button type="button" id="red">Red</button>
-    <button type="button" id="blue">Blue</button>
-    <button type="button" id="clear">Clear</button>
-    <button type="button" id="pointButton">Point</button>
-    <button type="button" id="triangleButton">Triangle</button>
-    <button type="button" id="circleButton">Circle</button>
-    <br/>
-    <button type="button" id="makeDrawing">Make My Drawing!</button>
+    <!-- Existing buttons (if any) -->
+    <button id="animationOn">Start Animation</button>
+    <button id="animationOff">Stop Animation</button>
   </div>
 
   <div class="sliders">
     <div class="slider-container">
-      <label for="redSlide">Red</label>
-      <input type="range" min="0" max="100" value="100" id="redSlide">
-      <span id="redValue">1.00</span>
-    </div>
-    <div class="slider-container">
-      <label for="greenSlide">Green</label>
-      <input type="range" min="0" max="100" value="100" id="greenSlide">
-      <span id="greenValue">1.00</span>
-    </div>
-    <div class="slider-container">
-      <label for="blueSlide">Blue</label>
-      <input type="range" min="0" max="100" value="100" id="blueSlide">
-      <span id="blueValue">1.00</span>
-    </div>
-    <div class="slider-container">
-      <label for="alphaSlide">Alpha</label>
-      <input type="range" min="0" max="100" value="100" id="alphaSlide">
-      <span id="alphaValue">1.00</span>
-    </div>
-    <div class="slider-container">
-      <label for="sizeSlide">Size</label>
-      <input type="range" min="5" max="40" value="5" id="sizeSlide">
-      <span id="sizeValue">5</span>
-    </div>
-    <div class="slider-container">
-      <label for="segSlide">Segments</label>
-      <input type="range" min="5" max="30" value="10" id="segSlide">
-      <span id="segValue">10</span>
-    </div>
-    <div class="slider-container">
       <label for="angleSlide">Camera Angle</label>
-      <input type="range" min="0" max="90" value="5" id="angleSlide">
-      <span id="angleValue">5</span>
+      <input type="range" min="-180" max="180" value="25" id="angleSlide">
+      <span id="angleValue">25</span>
+    </div>
+    <div class="slider-container">
+      <label for="headSlide">Head Angle</label>
+      <input type="range" min="-45" max="45" value="-2" id="headSlide">
+      <span id="headValue">-2</span>
+    </div>
+    <div class="slider-container">
+      <label for="rightArmSlide">Right Arm Angle</label>
+      <input type="range" min="215" max="260" value="225" id="rightArmSlide">
+      <span id="rightArmValue">225</span>
+    </div>
+    <div class="slider-container">
+      <label for="leftArmSlide">Left Arm Angle</label>
+      <input type="range" min="100" max="140" value="135" id="leftArmSlide">
+      <span id="leftArmValue">135</span>
+    </div>
   </div>
 
   <div class="description">
     <h3>Description</h3>
     <p>
-      This WebGL application allows users to draw shapes on a canvas using different colors and sizes. Users can select between points, triangles, and circles, and adjust the color and size of the shapes using sliders. The application also includes a clear button to reset the canvas and a button to generate a predefined drawing.
+      This WebGL application shows a 3D animal made out of primitive cubes. Users can control the limbs and the head rotation, and play an animation.
     <p>
       <strong>Name:</strong> Naitik Poddar <br>
-      <strong>Email:</strong> npoddar@ucsc.edu <br> <br>
       <strong>Grader Notes:</strong><br>
-      I made my drawing manually on desmos because I did not have graphing paper. I first made a very rough version using triangles on normal paper and then translated it into desmos.
-      The Desmos Graph link is <a href="https://www.desmos.com/calculator/3hnurqnici">here</a>. For the "awesome" part, I made a very cool drawing, implemented an Alpha slider and made the UI much nicer.
+      
     </p>
 </div>
   <script src="../lib/webgl-utils.js"></script>

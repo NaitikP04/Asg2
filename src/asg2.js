@@ -81,65 +81,17 @@ let g_selectedSegments = 10; // default number of segments for circle
 let g_selectedColor = [1.0, 1.0, 1.0, 1.0]; // white
 let g_selectedType = POINT; // default shape type
 let g_globalAngle = 0; // global rotation angle
+let g_headAngle = -2; // head rotation angle
+let g_rightArmAngle = 225; // right arm rotation angle
+let g_leftArmAngle = 135; // left arm rotation angle
+let anim = false; // animation flag
 
 // Actions for HTML UI
 function addActionsforHtmlUI(){
 
-  // Button Events 
-  document.getElementById('green').onclick = function() { g_selectedColor = [0.0, 1.0, 0.0, 1.0]; };
-  document.getElementById('red').onclick = function() { g_selectedColor = [1.0, 0.0, 0.0, 1.0]; };
-  document.getElementById('blue').onclick = function() { g_selectedColor = [0.0, 0.0, 1.0, 1.0]; };
-
-  // Clear Button Event
-  document.getElementById('clear').onclick = function() { g_shapesList = []; renderAllShapes(); };
-
-  // Shape Button Events
-  document.getElementById('pointButton').onclick = function() { g_selectedType = POINT};
-  document.getElementById('triangleButton').onclick = function() { g_selectedType = TRIANGLE};
-  document.getElementById('circleButton').onclick = function() { g_selectedType = CIRCLE};
-
-  // Drawing Button Event
-  document.getElementById('makeDrawing').onclick = function() { g_shapesList = []; renderAllShapes(); makeDrawing();};
-
-  // Slider Events
-  const updateColorAndDisplay = (sliderId, colorIndex, displayId) => {
-    const slider = document.getElementById(sliderId);
-    const display = document.getElementById(displayId);
-
-    slider.addEventListener('mouseup', function() {
-      const value = this.value / 100;
-      g_selectedColor[colorIndex] = value;
-      display.textContent = value.toFixed(2);
-    });
-  };
-
-  updateColorAndDisplay('redSlide', 0, 'redValue');
-  updateColorAndDisplay('greenSlide', 1, 'greenValue');
-  updateColorAndDisplay('blueSlide', 2, 'blueValue');
-
-  const alphaSlider = document.getElementById('alphaSlide');
-  const alphaDisplay = document.getElementById('alphaValue'); 
-  alphaSlider.addEventListener('mouseup', function() {
-    const value = this.value / 100;
-    g_selectedColor[3] = value;
-    alphaDisplay.textContent = value.toFixed(2);
-  });
-
-  // Size Slider Events
-  const sizeSlider = document.getElementById('sizeSlide');
-  const sizeDisplay = document.getElementById('sizeValue');
-  sizeSlider.addEventListener('mouseup', function() {
-    g_selectedSize = this.value;
-    sizeDisplay.textContent = this.value;
-  });
-
-  // Segment Slider Events
-  const segmentSlider = document.getElementById('segSlide');
-  const segmentDisplay = document.getElementById('segValue');
-  segmentSlider.addEventListener('mouseup', function() {
-    g_selectedSegments = this.value;
-    segmentDisplay.textContent = this.value;
-  });
+  // Animation Button Events
+  document.getElementById('animationOn').onclick = function() {anim = true};
+  document.getElementById('animationOff').onclick = function() {anim = false};
 
   // Angle Slider Events
   const angleSlider = document.getElementById('angleSlide');
@@ -150,59 +102,33 @@ function addActionsforHtmlUI(){
     angleDisplay.textContent = this.value;
   });
 
-}
+  // Head Slider Events
+  const headSlider = document.getElementById('headSlide');
+  const headDisplay = document.getElementById('headValue');
+  headSlider.addEventListener('mousemove', function() {
+    g_headAngle = this.value;
+    renderAllShapes();
+    headDisplay.textContent = this.value;
+  });
 
+  // Right Arm Slider Events
+  const rightArmSlider = document.getElementById('rightArmSlide');
+  const rightArmDisplay = document.getElementById('rightArmValue');
+  rightArmSlider.addEventListener('mousemove', function() {
+    g_rightArmAngle = this.value;
+    renderAllShapes();
+    rightArmDisplay.textContent = this.value;
+  });
 
-function makeDrawing() {
-  // Define colors for triangles
-  const colors = [
-    [1, 1, 1, 1], // White
-    [1, 0.5, 0, 1], // Orange
-    [0, 0, 0, 1], // Black
-    [0.2, 0.2, 0.2, 1], // Dark Gray
-    [0.6, 0.4, 0.2, 1] // Brown
-  ];
+  // Left Arm Slider Events
+  const leftArmSlider = document.getElementById('leftArmSlide');
+  const leftArmDisplay = document.getElementById('leftArmValue');
+  leftArmSlider.addEventListener('mousemove', function() {
+    g_leftArmAngle = this.value;
+    renderAllShapes();
+    leftArmDisplay.textContent = this.value;
+  });
 
-  // Function to create a triangle
-  function createTriangle(v1, v2, v3, position = [0, 0, 0], size = 10, colorIndex = 0) {
-    const tri = new Triangle();
-    tri.position = position;
-    tri.color = colors[colorIndex];
-    tri.size = size;
-    tri.setVertices(v1, v2, v3); 
-    g_shapesList.push(tri);
-  }
-
-  //face
-  createTriangle([-2, 1.5], [2, 1.5], [0, -2.5], [0, 0, 0], 50, 1); // Triangle 1
-  //ears
-  createTriangle([-2, 1.5], [-1, 1.5], [-2.25,2.5], [0, 0, 0], 50, 1); // Triangle 2
-  createTriangle([2, 1.5], [1, 1.5], [2.25,2.5], [0, 0, 0], 50, 1); // Triangle 3
-  createTriangle([-1.75, 1.5], [-1.25, 1.5], [-2, 2.1], [0, 0, 0], 50, 0); // Triangle 4
-  createTriangle([1.75, 1.5], [1.25, 1.5], [2, 2.1], [0, 0, 0], 50, 0); // Triangle 5
-  //eyes
-  createTriangle([-1, 0.7], [-0.6, 0.7], [-1.1, 1], [0, 0, 0], 50, 3); // Triangle 6
-  createTriangle([-0.6, 0.7], [-1.1, 1], [-0.7, 1],[0, 0, 0], 50, 3); // Triangle 7
-  createTriangle([1, 0.7], [0.6, 0.7], [1.1, 1], [0, 0, 0], 50, 3); // Triangle 8
-  createTriangle([0.6, 0.7], [1.1, 1], [0.7, 1],[0, 0, 0], 50, 3); // Triangle 9
-  //fur
-  createTriangle([-1.25, 0], [0, -0.5], [0, -2.5], [0, 0, 0], 50, 0); // Triangle 10
-  createTriangle([1.25, 0], [0, -0.5], [0, -2.5], [0, 0, 0], 50, 0); // Triangle 11
-  //nose
-  createTriangle([-0.3, 0], [0.3, 0], [0, -0.7], [0, 0, 0], 50, 2); // Triangle 12
-  //mouth
-  createTriangle([-0.02, -1.3], [0.02, -1.3], [0, -0.7], [0, 0, 0], 50, 2); // Triangle 13
-  createTriangle([0, -1.3], [-0.3, -1.25], [-0.5, -1.15], [0, 0, 0], 50, 2); // Triangle 14
-  createTriangle([0, -1.3], [0.3, -1.25], [0.5, -1.15], [0, 0, 0], 50, 2); // Triangle 15
-  //paws
-  createTriangle([-2.2, -1], [-1.6, -1], [-1.9, -1.6], [0, 0, 0], 50, 4); // Triangle 16
-  createTriangle([-1.9, -1], [-1.3, -1], [-1.6, -1.6], [0, 0, 0], 50, 4); // Triangle 17
-  createTriangle([-2.2, -1], [-1.3, -1], [-1.75, -0.8], [0, 0, 0], 50, 4); // Triangle 18
-  createTriangle([2.2, -1], [1.6, -1], [1.9, -1.6], [0, 0, 0], 50, 4); // Triangle 19
-  createTriangle([1.9, -1], [1.3, -1], [1.6, -1.6], [0, 0, 0], 50, 4); // Triangle 20
-  createTriangle([2.2, -1], [1.3, -1], [1.75, -0.8], [0, 0, 0], 50, 4); // Triangle 21
-
-  renderAllShapes();
 }
 
 function main() {
@@ -212,48 +138,44 @@ function main() {
 
   addActionsforHtmlUI();
 
-  // Register function (event handler) to be called on a mouse press
-  canvas.onmousedown = click;
-  canvas.onmousemove = function(ev){ if (ev.buttons==1) click(ev); };
-
   // Specify the color for clearing <canvas>
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(0.65, 0.2, 0.65, 1.0);
 
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  renderAllShapes();
+  // renderAllShapes();
+  requestAnimationFrame(tick);
 }
 
-var g_shapesList = [];
+var g_strartTime = performance.now()/1000.0;
+var g_seconds = performance.now()/1000.0 - g_strartTime;
 
-// var g_points = [];  // The array for the position of a mouse press
-// var g_colors = [];  // The array to store the color of a point
-// var g_sizes = [];  // The array to store the size of a point
+function tick() {
+  g_seconds = performance.now()/1000.0 - g_strartTime;
+  console.log(g_seconds);
 
-function click(ev) {
-
-  // Extract event click and convert to WebGL coordinates
-  [x, y] = convertCoordinatesEvenToGL(ev);
-
-  let point;
-  if (g_selectedType == POINT) {
-    point = new Point();
-  } else if (g_selectedType == TRIANGLE) {
-    point = new Triangle();
-  } else { 
-    point = new Circle();
+  if (anim){
+    updateAnimationAngles();
   }
-  point.position = [x, y];
-  point.color = g_selectedColor.slice();
-  point.size = g_selectedSize;
-  if (point.type == 'circle') point.segments = g_selectedSegments;
-  g_shapesList.push(point);
 
-  // Draw all the shapes that are supposed to be on the canvas
   renderAllShapes();
+  requestAnimationFrame(tick);
+}
+
+function updateAnimationAngles() {
+  
+  // Animation for the head angle (-10 to 20 degrees)
+  g_headAngle = -10 + 15 * Math.sin(g_seconds * 2); // Oscillates between -10 and 20
+
+  // Animation for the right arm angle (220 to 245 degrees)
+  g_rightArmAngle = 220 + 12.5 * Math.sin(g_seconds * 3); // Oscillates between 220 and 245
+
+  // Animation for the left arm angle (110 to 130 degrees)
+  g_leftArmAngle = 110 + 10 * Math.sin(g_seconds * 3); // Oscillates between 110 and 130
 
 }
+
 
 function convertCoordinatesEvenToGL(ev){
   var x = ev.clientX; // x coordinate of a mouse pointer
@@ -277,27 +199,110 @@ function renderAllShapes(){
 
   // Clear <canvas>
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.clear(gl.COLOR_BUFFER_BIT);
 
-  // var len = g_shapesList.length;
-
-  // for(var i = 0; i < len; i++) {
-  //   g_shapesList[i].render();
-  // }
-
-  drawTriangle3D([ -1.0,0.0,0.0, -0.5,-1.0,0.0, 0.0,0.0,0.0 ]);
 
   var body = new Cube();
-  body.color = [1.0, 0.0, 0.0, 1.0];
-  body.matrix.translate(-0.25, -0.5, 0.0);
-  body.matrix.scale(0.5, 1.0, 0.5);
+  body.color = [0.90, 0.90, 0.90, 1.0];
+  body.matrix.setTranslate(0.0, -0.4, 0.0);
+  var bodyCoordinates = new Matrix4(body.matrix);
+  body.matrix.scale(0.5, 0.6, 0.75);
+  body.matrix.translate(-0.5, 0.0, 0.0);
   body.render();
 
+  var head = new Cube();
+  head.color = [0.9, 0.9, 0.9, 1.0];
+  head.matrix.setTranslate(-0.25, 0.2001, 0.2);
+  head.matrix.rotate(g_headAngle, 1, 0, 0);
+  head.matrix.translate(0.0, 0.0, -0.2);
+  var headCoordinates = new Matrix4(head.matrix);
+  head.matrix.scale(0.5, 0.5, 0.5);
+  head.render();
+
+  var bodyBack = new Cube();
+  bodyBack.color = [0.85, 0.85, 0.85, 1.0];;
+  bodyBack.matrix = new Matrix4(bodyCoordinates);
+  bodyBack.matrix.scale(0.4, 0.55, 0.2);
+  bodyBack.matrix.translate(-0.5, 0.05, 3.75);
+  bodyBack.render();
+
+  var rightEye = new Cube();
+  rightEye.color = [0.2, 0.2, 0.2, 1.0];
+  rightEye.matrix = new Matrix4(headCoordinates);
+  rightEye.matrix.translate(0.5, 0.25, 0.1);
+  rightEye.matrix.scale(0.05, 0.1, 0.1);
+  rightEye.render();
+
+  var leftEye = new Cube();
+  leftEye.color = [0.2, 0.2, 0.2, 1.0];
+  leftEye.matrix = new Matrix4(headCoordinates);
+  leftEye.matrix.translate(-0.05, 0.25, 0.1);
+  leftEye.matrix.scale(0.05, 0.1, 0.1);
+  leftEye.render();
+
+  var comb = new Cube();
+  comb.color = [1.0, 0.0, 0.0, 1.0];
+  comb.matrix = new Matrix4(headCoordinates);
+  comb.matrix.scale(0.1, 0.18, 0.3);
+  comb.matrix.translate(2.0, 2.8, 0.25);
+  comb.render();
+
+  var beakTop = new Cube();
+  beakTop.color = [1.0, 0.64, 0.0, 1.0];
+  beakTop.matrix = new Matrix4(headCoordinates);
+  beakTop.matrix.scale(0.08, 0.1, 0.12);
+  beakTop.matrix.translate(2.5, 1.5, -1.);
+  beakTop.render();
+
+  var beakBottom = new Cube();
+  beakBottom.color = [0.9, 0.0, 0.0, 1.0];
+  beakBottom.matrix = new Matrix4(headCoordinates);
+  beakBottom.matrix.scale(0.08, 0.08, 0.08);
+  beakBottom.matrix.translate(2.5, 0.85, -1.0);
+  beakBottom.render();
+
+  var rightArm = new Cube();
+  rightArm.color = [0.9, 0.9, 0.9, 1.0];
+  rightArm.matrix.setTranslate(0.25, 0.125, 0.1);
+  rightArm.matrix.rotate(g_rightArmAngle, 0, 0, 1);
+  rightArm.matrix.scale(0.2, 0.5, 0.5);
+  rightArm.render();
+
   var leftArm = new Cube();
-  leftArm.color = [1.0, 1.0, 0.0, 1.0];
-  leftArm.matrix.setTranslate(0.7, 0.0, 0.0);
-  leftArm.matrix.rotate(45, 0, 0, 1);
-  leftArm.matrix.scale(0.25, 0.7, 0.5);
+  leftArm.color = [0.9, 0.9, 0.9, 1.0];
+  leftArm.matrix.rotate(180, 1, 0, 0);
+  leftArm.matrix.setTranslate(-0.1, 0., 0.1);
+  leftArm.matrix.rotate(g_leftArmAngle, 0, 0, 1);
+  leftArm.matrix.scale(0.2, 0.5, 0.5);
   leftArm.render();
+
+  var rightLegTop = new Cube();
+  rightLegTop.color = [1.0, 0.64, 0.0, 1.0];
+  rightLegTop.matrix.scale(0.05, 0.1, 0.05);
+  rightLegTop.matrix.translate(1.0, -5.0, 5.0);
+  var rightLegCoordinates = new Matrix4(rightLegTop.matrix);  
+  rightLegTop.render();
+
+  var rightLegBottom = new Cube();
+  rightLegBottom.color = [1.0, 0.64, 0.0, 1.0];
+  rightLegBottom.matrix = new Matrix4(rightLegCoordinates);
+  rightLegBottom.matrix.scale(1.5, 0.4, 2.0);
+  rightLegBottom.matrix.translate(-0.15, -1.0, -0.5);
+  rightLegBottom.render();
+
+  var leftLegTop = new Cube();
+  leftLegTop.color = [1.0, 0.64, 0.0, 1.0];
+  leftLegTop.matrix.scale(0.05, 0.1, 0.05);
+  leftLegTop.matrix.translate(-2.5, -5.0, 5.0);
+  leftLegCoordinates = new Matrix4(leftLegTop.matrix);
+  leftLegTop.render();
+
+  var leftLegBottom = new Cube();
+  leftLegBottom.color = [1.0, 0.64, 0.0, 1.0];
+  leftLegBottom.matrix = new Matrix4(leftLegCoordinates);
+  leftLegBottom.matrix.scale(1.5, 0.4, 2.0);
+  leftLegBottom.matrix.translate(-0.15, -1.0, -0.5);
+  leftLegBottom.render();
 
   var duration = performance.now() - startTime;
   sendTextToHTML(" ms: " + Math.floor(duration) + " fps: " + Math.floor(10000/duration)/10, "numdot");
